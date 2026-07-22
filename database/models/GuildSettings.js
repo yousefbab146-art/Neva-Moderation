@@ -75,7 +75,19 @@ const GuildSettingsSchema = new mongoose.Schema({
     },
 
     quarantineRole: { type: String, default: null },
-    badWords: { type: [String], default: [] },
+    // Küfür Kelime Listesi (Varsayılan Kapsamlı Türkçe + İngilizce Kütüphane)
+    badWords: { 
+        type: [String], 
+        default: [
+            // Türkçe
+            'amk', 'aq', 'amq', 'amına', 'amınakoyayım', 'amınagoyayım', 'sik', 'sikik', 'sikerim', 
+            'siktim', 'sikiş', 'siktir', 'piç', 'yarrak', 'yarak', 'orospu', 'göt', 'götveren', 
+            'oç', 'kahpe', 'dalyarak', 'ibne', 'taşşak', 'puşt', 'yavşak', 'gavat', 'yarram',
+            // İngilizce
+            'fuck', 'fucking', 'bitch', 'shit', 'asshole', 'cunt', 'dick', 'bastard', 'slut', 
+            'whore', 'motherfucker', 'nigger', 'cock', 'pussy'
+        ] 
+    },
     autoResponders: [{ trigger: String, response: String }],
     welcome: {
         enabled:   { type: Boolean, default: false },

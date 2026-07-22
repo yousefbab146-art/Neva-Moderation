@@ -11,10 +11,20 @@ async function handleAutomod(message, settings) {
 
     const { automod, badWords } = settings;
 
-    // --- Küfür Filtresi ---
-    if (automod.filterProfanity && badWords?.length) {
+    // --- Küfür Filtresi (Kapsamlı Türkçe + İngilizce Kütüphanesi) ---
+    const defaultBadWords = [
+        'amk', 'aq', 'amq', 'amına', 'amınakoyayım', 'amınagoyayım', 'sik', 'sikik', 'sikerim', 
+        'siktim', 'sikiş', 'siktir', 'piç', 'yarrak', 'yarak', 'orospu', 'göt', 'götveren', 
+        'oç', 'kahpe', 'dalyarak', 'ibne', 'taşşak', 'puşt', 'yavşak', 'gavat', 'yarram',
+        'fuck', 'fucking', 'bitch', 'shit', 'asshole', 'cunt', 'dick', 'bastard', 'slut', 
+        'whore', 'motherfucker', 'nigger', 'cock', 'pussy'
+    ];
+
+    const activeBadWords = (badWords && badWords.length > 0) ? badWords : defaultBadWords;
+
+    if (automod.filterProfanity) {
         const lower = message.content.toLowerCase();
-        if (badWords.some(w => lower.includes(w.toLowerCase()))) {
+        if (activeBadWords.some(w => lower.includes(w.toLowerCase()))) {
             await message.delete().catch(() => {});
             await message.channel.send({
                 content: `⚠️ ${message.author}, uygunsuz kelime kullanımı! Bu mesaj silindi.`
