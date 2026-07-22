@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neva Moderation | Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <i data-lucide="shield-check" class="brand-icon"></i>
+                    <h2>Neva Mod</h2>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <p class="nav-label">GENEL</p>
+                <button class="nav-btn active" data-target="overview">
+                    <i data-lucide="layout-dashboard"></i> Genel Bakış
+                </button>
+                
+                <p class="nav-label">ARAÇLAR & MODÜLLER</p>
+                <button class="nav-btn" data-target="embed-builder">
+                    <i data-lucide="layout-template"></i> Embed Oluşturucu
+                </button>
+                <button class="nav-btn" data-target="temp-voice">
+                    <i data-lucide="mic"></i> Geçici Ses Odaları
+                </button>
+                <button class="nav-btn" data-target="leveling">
+                    <i data-lucide="award"></i> Seviye & XP
+                </button>
+
+                <p class="nav-label">LOG KANALLARI</p>
+                <button class="nav-btn" data-target="custom-logs">
+                    <i data-lucide="list-filter"></i> Ayrı Log Ayarları
+                </button>
+                <button class="nav-btn" data-target="modlogs">
+                    <i data-lucide="history"></i> İşlem Geçmişi
+                </button>
+                
+                <p class="nav-label">GÜVENLİK & KORUMA</p>
+                <button class="nav-btn" data-target="guard">
+                    <i data-lucide="shield-alert"></i> Sunucu Koruması (Guard)
+                </button>
+                <button class="nav-btn" data-target="automod">
+                    <i data-lucide="bot"></i> Oto-Moderasyon
+                </button>
+                <button class="nav-btn" data-target="whitelist">
+                    <i data-lucide="shield-check"></i> Muafiyet (Whitelist)
+                </button>
+                
+                <p class="nav-label">YÖNETİM</p>
+                <button class="nav-btn" data-target="autorole">
+                    <i data-lucide="user-check"></i> Oto-Rol
+                </button>
+                <button class="nav-btn" data-target="warns">
+                    <i data-lucide="alert-triangle"></i> Uyarılar
+                </button>
+                <button class="nav-btn" data-target="autoresponder">
+                    <i data-lucide="message-square-reply"></i> Oto-Cevap
+                </button>
+                <button class="nav-btn" data-target="welcome">
+                    <i data-lucide="user-plus"></i> Karşılama
+                </button>
+                
+                <p class="nav-label">SİSTEM</p>
+                <button class="nav-btn" data-target="logs">
+                    <i data-lucide="terminal"></i> Sistem Logları
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar-placeholder"><i data-lucide="user"></i></div>
+                    <div class="user-info">
+                        <span class="user-name">Yönetici</span>
+                        <span class="user-role">Yetkili</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-search">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Modüllerde veya loglarda ara...">
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="app.refreshData()"><i data-lucide="refresh-cw"></i></button>
+                    <div class="guild-selector">
+                        <span id="currentGuildName">Yükleniyor...</span>
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <!-- Overview Page -->
+                <section id="overview" class="page active animate-fade-in">
+                    <div class="page-header">
+                        <h1>Sistem Durumu</h1>
+                        <p>Sunucunuzun genel istatistikleri ve koruma özeti.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper"><i data-lucide="users"></i></div>
+                            <div class="stat-info">
+                                <h3>Toplam Kullanıcı</h3>
+                                <p id="stat-members" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper"><i data-lucide="message-circle"></i></div>
+                            <div class="stat-info">
+                                <h3>Toplam Kanal</h3>
+                                <p id="stat-channels" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper"><i data-lucide="shield-check"></i></div>
+                            <div class="stat-info">
+                                <h3>Guard Koruması</h3>
+                                <p id="stat-guard-status" class="stat-value" style="font-size: 1.2rem; color: var(--success)">Aktif</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper"><i data-lucide="alert-circle"></i></div>
+                            <div class="stat-info">
+                                <h3>Aktif Uyarılar</h3>
+                                <p id="stat-warns" class="stat-value">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="panel bot-info-panel">
+                            <div class="panel-header">
+                                <h2><i data-lucide="cpu"></i> Sistem Bilgisi</h2>
+                            </div>
+                            <div class="panel-content">
+                                <div class="info-row">
+                                    <span>Durum</span>
+                                    <span class="status-badge success">Aktif</span>
+                                </div>
+                                <div class="info-row">
+                                    <span>Gecikme (Ping)</span>
+                                    <span id="bot-ping">0ms</span>
+                                </div>
+                                <div class="info-row">
+                                    <span>Çalışma Süresi</span>
+                                    <span id="bot-uptime">Bilinmiyor</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel quick-actions-panel">
+                            <div class="panel-header">
+                                <h2><i data-lucide="zap"></i> Hızlı İşlemler</h2>
+                            </div>
+                            <div class="panel-content quick-actions">
+                                <button class="action-btn" onclick="app.refreshData()"><i data-lucide="refresh-cw"></i> Verileri Yenile</button>
+                                <button class="action-btn danger"><i data-lucide="lock"></i> Acil Durum Kilidi</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Live Embed Builder Page -->
+                <section id="embed-builder" class="page">
+                    <div class="page-header">
+                        <h1>Canlı Embed & Duyuru Oluşturucu</h1>
+                        <p>Discord kanalına göndermek için profesyonel duyuru mesajları tasarlayın.</p>
+                    </div>
+                    <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+                        <!-- Form -->
+                        <div class="panel">
+                            <div class="panel-header"><h2><i data-lucide="edit-3"></i> Mesaj Tasarımı</h2></div>
+                            <div class="form-group">
+                                <label>Hedef Metin Kanalı</label>
+                                <select id="eb-channel" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                <input type="text" id="eb-title" class="sleek-input" placeholder="Örn: Sunucu Güncellemesi" oninput="app.updateEmbedPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>Açıklama / Metin</label>
+                                <textarea id="eb-desc" class="sleek-input" rows="4" placeholder="Duyuru metniniz buraya..." oninput="app.updateEmbedPreview()"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Vurgu Rengi</label>
+                                <input type="color" id="eb-color" value="#5865F2" class="sleek-input" style="height: 40px; cursor: pointer;" onchange="app.updateEmbedPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>Görsel (Banner) URL</label>
+                                <input type="text" id="eb-image" class="sleek-input" placeholder="https://..." oninput="app.updateEmbedPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>Alt Bilgi (Footer)</label>
+                                <input type="text" id="eb-footer" class="sleek-input" placeholder="Örn: Neva Moderation Ekibi" oninput="app.updateEmbedPreview()">
+                            </div>
+                            <button class="save-btn" onclick="app.sendEmbed()"><i data-lucide="send"></i> Kanala Gönder</button>
+                        </div>
+                        <!-- Live Preview -->
+                        <div class="panel">
+                            <div class="panel-header"><h2><i data-lucide="eye"></i> Canlı Önizleme</h2></div>
+                            <div class="discord-embed-preview" id="embed-preview-box" style="border-left: 4px solid #5865F2; background: #0e0e11; padding: 16px; border-radius: 6px;">
+                                <h3 id="prev-title" style="margin-bottom: 8px; font-size: 1.1rem; color: #fff;">Başlık Burada Görünecek</h3>
+                                <p id="prev-desc" style="color: #dbdee1; font-size: 0.9rem; white-space: pre-wrap;">Açıklama metniniz canlı olarak burada önizlenecek.</p>
+                                <img id="prev-img" src="" style="max-width: 100%; border-radius: 4px; margin-top: 12px; display: none;">
+                                <div id="prev-footer" style="color: #949ba4; font-size: 0.75rem; margin-top: 12px; border-top: 1px solid #232428; padding-top: 8px;">Footer metni</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Temp Voice (JTC) Page -->
+                <section id="temp-voice" class="page">
+                    <div class="page-header">
+                        <h1>Geçici Özel Ses Odaları (JTC)</h1>
+                        <p>Kullanıcılar "Oda Aç" kanalına girdiğinde otomatik özel oda oluşturan sistem.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="setting-item" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <div class="setting-info">
+                                    <h3><i data-lucide="mic" style="width:16px; margin-right:6px"></i> JTC Sistemini Aktif Et</h3>
+                                    <p>Açık olduğunda belirlediğiniz kanala giren üyelere geçici oda açılır.</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="jtc-enabled">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
+                                <div class="form-group">
+                                    <label>Tetikleyici "Oda Aç" Ses Kanalı</label>
+                                    <select id="jtc-channel" class="sleek-input channel-select"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Odaların Açılacağı Kategori</label>
+                                    <select id="jtc-category" class="sleek-input category-select"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Varsayılan Kişi Limiti (Standart: 16)</label>
+                                    <input type="number" id="jtc-limit" value="16" min="0" max="99" class="sleek-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Oda İsim Formatı ({user} = Profil Adı)</label>
+                                    <input type="text" id="jtc-name" value="{user}'in Odası" class="sleek-input">
+                                </div>
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label>Oda İçi Kontrol Paneli Görsel (Banner) URL (PNG / GIF / JPG)</label>
+                                    <input type="text" id="jtc-banner" placeholder="https://i.ibb.co/L5BwY3q/banner.png" class="sleek-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveTempVoiceSettings()"><i data-lucide="save"></i> Ses Odası Ayarlarını Kaydet</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Leveling System Page -->
+                <section id="leveling" class="page">
+                    <div class="page-header">
+                        <h1>Seviye & XP Sistemi</h1>
+                        <p>Üyeler yazı yazdıkça XP kazanır ve seviye atlar.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="setting-item" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <div class="setting-info">
+                                    <h3><i data-lucide="award" style="width:16px; margin-right:6px"></i> Seviye Sistemini Aktif Et</h3>
+                                    <p>Açık olduğunda XP kazanımı aktif olur.</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="lvl-enabled" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group" style="width: 100%;">
+                                <label>Seviye Atlama Duyuru Kanalı</label>
+                                <select id="lvl-log-channel" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group" style="width: 100%;">
+                                <label>Mesaj Başına Verilecek XP</label>
+                                <input type="number" id="lvl-xp-rate" value="15" class="sleek-input">
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveLevelSettings()"><i data-lucide="save"></i> Seviye Ayarlarını Kaydet</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Whitelist Page -->
+                <section id="whitelist" class="page">
+                    <div class="page-header">
+                        <h1>Muafiyet (Whitelist)</h1>
+                        <p>Oto-Moderasyon (Küfür, Reklam, Spam) kurallarından muaf kanallar ve roller.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Muaf Kanal</label>
+                                <select id="wl-channel" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Muaf Rol</label>
+                                <select id="wl-role" class="sleek-input role-select"></select>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveWhitelistSettings()"><i data-lucide="save"></i> Muafiyetleri Kaydet</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Custom Log Channels Page -->
+                <section id="custom-logs" class="page">
+                    <div class="page-header">
+                        <h1>Ayrı Log Kanalları</h1>
+                        <p>Her bir moderasyon ve sistem eylemi için özel log kanalı belirleyin.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label><i data-lucide="hammer" style="width:16px; vertical-align:middle;"></i> Ban / Unban Log Kanalı</label>
+                                <select id="log-ban" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="volume-x" style="width:16px; vertical-align:middle;"></i> Mute / Unmute Log Kanalı</label>
+                                <select id="log-mute" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="user-x" style="width:16px; vertical-align:middle;"></i> Kick Log Kanalı</label>
+                                <select id="log-kick" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="alert-circle" style="width:16px; vertical-align:middle;"></i> Uyarı Log Kanalı</label>
+                                <select id="log-warn" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="message-square" style="width:16px; vertical-align:middle;"></i> Mesaj Silme & Düzenleme Log Kanalı</label>
+                                <select id="log-message" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="mic" style="width:16px; vertical-align:middle;"></i> Ses Kanalı Hareket Log Kanalı</label>
+                                <select id="log-voice" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label><i data-lucide="user-plus" style="width:16px; vertical-align:middle;"></i> Üye Katıldı / Ayrıldı Log Kanalı</label>
+                                <select id="log-member" class="sleek-input channel-select"></select>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveLogChannels()">
+                                <i data-lucide="save"></i> Log Kanallarını Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Guard & Anti-Raid Page -->
+                <section id="guard" class="page">
+                    <div class="page-header">
+                        <h1>Sunucu Koruması (Guard)</h1>
+                        <p>Hesap yaşı kontrolü, izinsiz bot engelleme ve anti-raid koruması.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-list">
+                            <div class="setting-item" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+                                <div class="form-group" style="width: 100%;">
+                                    <label><i data-lucide="clock" style="width:16px; vertical-align:middle;"></i> Şüpheli Hesap Yaşı Sınırı (Gün)</label>
+                                    <input type="number" id="guard-age-limit" class="sleek-input" placeholder="Örn: 7" min="0" max="365">
+                                    <small style="color: var(--text-muted); margin-top: 4px; display: block;">Bu günden daha yeni açılmış hesaplar şüpheli kabul edilir.</small>
+                                </div>
+                                <div class="form-group" style="width: 100%;">
+                                    <label><i data-lucide="shield" style="width:16px; vertical-align:middle;"></i> Şüpheli Hesap Eylemi</label>
+                                    <select id="guard-age-action" class="sleek-input">
+                                        <option value="quarantine">Karantinaya Al (Karantina Rolü Ver)</option>
+                                        <option value="kick">Sunucudan At (Kick)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3><i data-lucide="bot" style="width:16px; margin-right:6px"></i> Bot Katılım Koruması (Anti-Bot)</h3>
+                                    <p>İzinsiz sunucuya sokulan botları anında kickler.</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="guard-anti-bot">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveGuardSettings()">
+                                <i data-lucide="save"></i> Koruma Ayarlarını Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AutoRole Page -->
+                <section id="autorole" class="page">
+                    <div class="page-header">
+                        <h1>Oto-Rol Sistemi</h1>
+                        <p>Sunucuya yeni katılan kullanıcılara ve botlara verilecek rolleri ayarlayın.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label><i data-lucide="user" style="width:16px; vertical-align:middle;"></i> Üye Oto-Rolü</label>
+                                <select id="role-user" class="sleek-input role-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="bot" style="width:16px; vertical-align:middle;"></i> Bot Oto-Rolü</label>
+                                <select id="role-bot" class="sleek-input role-select"></select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label><i data-lucide="lock" style="width:16px; vertical-align:middle;"></i> Karantina Rolü</label>
+                                <select id="role-quarantine" class="sleek-input role-select"></select>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveAutoRoleSettings()">
+                                <i data-lucide="save"></i> Oto-Rol Ayarlarını Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ModLogs Page -->
+                <section id="modlogs" class="page">
+                    <div class="page-header">
+                        <h1>İşlem Geçmişi</h1>
+                        <p>Sunucuda yapılan tüm moderasyon işlemlerinin kayıtları.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="panel-header">
+                            <div class="filter-group">
+                                <button class="filter-btn active" data-filter="all">Tümü</button>
+                                <button class="filter-btn" data-filter="ban">Ban</button>
+                                <button class="filter-btn" data-filter="kick">Kick</button>
+                                <button class="filter-btn" data-filter="mute">Mute</button>
+                            </div>
+                            <button class="action-btn" onclick="app.loadModLogs()"><i data-lucide="refresh-cw"></i></button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>İşlem</th>
+                                        <th>Kullanıcı</th>
+                                        <th>Yetkili</th>
+                                        <th>Sebep</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modlog-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            <button class="icon-btn" onclick="app.prevModLogPage()"><i data-lucide="chevron-left"></i></button>
+                            <span id="modlog-page-info">Sayfa 1</span>
+                            <button class="icon-btn" onclick="app.nextModLogPage()"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AutoMod Page -->
+                <section id="automod" class="page">
+                    <div class="page-header">
+                        <h1>Oto-Moderasyon</h1>
+                        <p>Küfür, reklam ve spam koruma ayarları.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-list" id="automod-settings">
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveAutoModSettings()">
+                                <i data-lucide="save"></i> Ayarları Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Warns Page -->
+                <section id="warns" class="page">
+                    <div class="page-header">
+                        <h1>Uyarı Kayıtları</h1>
+                        <p>Kullanıcılara verilen uyarıların yönetimi.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="panel-header">
+                            <div class="search-box">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="warn-search" placeholder="Kullanıcı ID Ara...">
+                            </div>
+                            <button class="action-btn" onclick="app.searchWarns()"><i data-lucide="filter"></i> Ara</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Kullanıcı ID</th>
+                                        <th>Yetkili ID</th>
+                                        <th>Sebep</th>
+                                        <th>Tarih</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="warn-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AutoResponder Page -->
+                <section id="autoresponder" class="page">
+                    <div class="page-header">
+                        <div class="header-content">
+                            <h1>Oto-Cevaplar</h1>
+                            <p>Belirli kelimelere otomatik verilecek yanıtlar.</p>
+                        </div>
+                        <button class="action-btn primary" onclick="app.showAddAutoResponderModal()">
+                            <i data-lucide="plus"></i> Yeni Ekle
+                        </button>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tetikleyici Kelime</th>
+                                        <th>Verilecek Cevap</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="autoresponder-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Welcome System Page -->
+                <section id="welcome" class="page">
+                    <div class="page-header">
+                        <h1>Karşılama Sistemi</h1>
+                        <p>Sunucuya giren/çıkan üyeler için mesaj ayarları.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-list" id="welcome-settings">
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveWelcomeSettings()">
+                                <i data-lucide="save"></i> Ayarları Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Logs Page -->
+                <section id="logs" class="page">
+                    <div class="page-header">
+                        <div class="header-content">
+                            <h1>Sistem Logları</h1>
+                            <p>Botun anlık konsol kayıtları.</p>
+                        </div>
+                        <button class="icon-btn" onclick="app.loadLogs()"><i data-lucide="refresh-cw"></i></button>
+                    </div>
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                            <span class="terminal-title">neva-mod-cli</span>
+                        </div>
+                        <pre id="system-logs" class="terminal-body">Yükleniyor...</pre>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+    <div id="add-autoresponder-modal" class="modal">
+        <div class="modal-header">
+            <h2><i data-lucide="plus-circle"></i> Yeni Oto-Cevap</h2>
+            <button class="close-modal icon-btn" onclick="app.closeModals()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Tetikleyici Kelime</label>
+                <input type="text" id="ar-trigger" placeholder="Örn: sa, merhaba" class="sleek-input">
+            </div>
+            <div class="form-group">
+                <label>Cevap</label>
+                <textarea id="ar-reply" placeholder="Örn: Aleykümselam, hoş geldin!" class="sleek-input" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="action-btn" onclick="app.closeModals()">İptal</button>
+            <button class="action-btn primary" onclick="app.saveAutoResponder()">Kaydet</button>
+        </div>
+    </div>
+    
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
